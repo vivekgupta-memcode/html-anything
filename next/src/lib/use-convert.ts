@@ -87,6 +87,9 @@ export function useConvert() {
         ...(useModel ? { model: useModel } : {}),
         ...(binOverride ? { binOverride } : {}),
         ...(editPayload ?? {}),
+        ...(store.useConfiguredAgentMemory
+          ? { useConfiguredAgentMemory: true }
+          : {}),
       };
 
       const sizeNote = `输入 ${enrichedContent.length.toLocaleString()} 字符 (${summary.format})`;

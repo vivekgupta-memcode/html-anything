@@ -208,6 +208,18 @@ pnpm -F @html-anything/e2e test
 
 只要你已经在终端里登录过对应的 CLI（例如 `claude login`、`cursor login`），HTML Anything 直接复用同一个 session，**不要求你再贴一遍 API Key**。
 
+### 可选的 Memcode 记忆
+
+HTML Anything 可以选择性地给当前 coding agent 加入记忆策略。先在该 agent 中配置远程 Memcode MCP 地址：
+
+```text
+https://mcp.memcode.in/mcp
+```
+
+兼容的 agent 会自行完成 OAuth discovery、动态客户端注册（DCR）以及 Authorization Code + PKCE，凭据也保存在 agent 自己的 credential store 中。HTML Anything 不会增加 API Key fallback，也不会接收注册信息、Bearer Token 或召回的记忆内容。确认 agent 已经能看到 Memcode tools 后，再开启 **设置 → Agent → 已配置的 agent 记忆**；工具缺失或认证失败时，生成会在没有记忆的情况下继续。
+
+召回上限为 5 条记录，每条格式化记录最多 2,048 UTF-8 字节，完整召回块最多 8,192 字节。召回内容只是不可信的参考资料，不能覆盖当前请求或 skill。转换、编辑、预览、导出以及普通草稿请求都不构成写入许可。只有当前指令直接要求记忆，例如“请记住我偏好海军蓝色的季度报告”，才允许针对这段明确内容执行一次 `save_memory`；写入不会自动重试。
+
 ## 🎨 Skills
 
 **75 套 skill 在 [`next/src/lib/templates/skills/`](next/src/lib/templates/skills/) 下开箱即用。** 每个 skill 是一个文件夹，遵循 Claude Code [`SKILL.md`](https://docs.anthropic.com/en/docs/claude-code/skills) 约定 + 扩展 frontmatter（`mode` · `scenario` · `surface` · `preview` · `design_system`）。

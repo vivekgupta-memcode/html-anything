@@ -71,6 +71,9 @@ export function useDraft() {
           context: req.context ?? before,
           ...(model ? { model } : {}),
           ...(binOverride ? { binOverride } : {}),
+          ...(store.useConfiguredAgentMemory
+            ? { useConfiguredAgentMemory: true }
+            : {}),
         }),
         signal: ctl.signal,
       });

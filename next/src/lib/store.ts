@@ -180,6 +180,8 @@ type Persisted = {
   historyPaneOpen: boolean;
   locale: Locale;
   layoutMode: LayoutMode;
+  /** Add an opt-in Memcode policy to prompts sent to the selected local agent. */
+  useConfiguredAgentMemory: boolean;
 };
 
 type State = {
@@ -199,6 +201,7 @@ type State = {
   historyPaneOpen: boolean;
   locale: Locale;
   layoutMode: LayoutMode;
+  useConfiguredAgentMemory: boolean;
 
   // task lifecycle
   newTask: (init?: Partial<Pick<Task, "name" | "content" | "format" | "filename" | "templateId">>) => string;
@@ -264,6 +267,7 @@ type State = {
   setHistoryPaneOpen: (v: boolean) => void;
   setLocale: (l: Locale) => void;
   setLayoutMode: (m: LayoutMode) => void;
+  setUseConfiguredAgentMemory: (enabled: boolean) => void;
 };
 
 function patchTask(tasks: Task[], id: string, patch: Partial<Task> | ((t: Task) => Partial<Task>)): Task[] {
@@ -293,6 +297,7 @@ export const useStore = create<State>()(
       historyPaneOpen: false,
       locale: "en",
       layoutMode: "split",
+      useConfiguredAgentMemory: false,
 
       newTask: (init) => {
         const tasks = get().tasks;
@@ -485,12 +490,14 @@ export const useStore = create<State>()(
       setHistoryPaneOpen: (v) => set({ historyPaneOpen: v }),
       setLocale: (l) => set({ locale: l }),
       setLayoutMode: (m) => set({ layoutMode: m }),
+      setUseConfiguredAgentMemory: (enabled) =>
+        set({ useConfiguredAgentMemory: enabled }),
     }),
     {
       // Legacy key from the old "HTML Everything" brand; do NOT rename — every
       // existing user's saved tasks live under this localStorage key.
       name: "html-everything-store",
-      version: 7,
+      version: 8,
       partialize: (s): Persisted => ({
         tasks: s.tasks.map((t) => ({
           ...t,
@@ -506,6 +513,7 @@ export const useStore = create<State>()(
         historyPaneOpen: s.historyPaneOpen,
         locale: s.locale,
         layoutMode: s.layoutMode,
+        useConfiguredAgentMemory: s.useConfiguredAgentMemory,
       }),
       migrate: (persisted, fromVersion): Persisted => {
         // v1 → v2: wrap top-level content/format/filename/selectedTemplate into a single task.
@@ -570,6 +578,11 @@ export const useStore = create<State>()(
               if (!Array.isArray(t.deployments)) t.deployments = [];
             }
           }
+        }
+        // v7 → v8: configured-agent memory is local-only and opt-in.
+        if (fromVersion < 8 && persisted && typeof persisted === "object") {
+          const p = persisted as Record<string, unknown>;
+          p.useConfiguredAgentMemory = false;
         }
         return persisted as Persisted;
       },
