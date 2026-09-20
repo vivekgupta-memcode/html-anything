@@ -98,6 +98,10 @@ export interface Dict {
   "settings.section.language.hint": string;
   "settings.agent.title": string;
   "settings.agent.subtitle": string;
+  "settings.agent.memory.title": string;
+  "settings.agent.memory.subtitle": string;
+  "settings.agent.memory.enabled": string;
+  "settings.agent.memory.disabled": string;
   "settings.language.title": string;
   "settings.language.subtitle": string;
   "settings.language.active": string;
@@ -458,6 +462,11 @@ const en: Dict = {
   "settings.agent.title": "Code agent",
   "settings.agent.subtitle":
     "HTML Anything reuses your already-logged-in CLI session — no API key required.",
+  "settings.agent.memory.title": "Configured agent memory",
+  "settings.agent.memory.subtitle":
+    "Let the selected agent use its existing Memcode MCP connection. HTML Anything never receives credentials or memory payloads. Recall is bounded and writes require an explicit remember request.",
+  "settings.agent.memory.enabled": "On",
+  "settings.agent.memory.disabled": "Off",
   "settings.language.title": "Interface language",
   "settings.language.subtitle":
     "Sets the language the app surface uses. Default is English; your choice is saved locally.",
@@ -819,6 +828,11 @@ const zhCN: Dict = {
   "settings.agent.title": "Code agent",
   "settings.agent.subtitle":
     "HTML Anything 复用你已经登录的 CLI session — 不需要再贴 API Key。",
+  "settings.agent.memory.title": "已配置的 agent 记忆",
+  "settings.agent.memory.subtitle":
+    "允许所选 agent 使用它已有的 Memcode MCP 连接。HTML Anything 不会接收凭据或记忆内容；召回有严格上限，写入必须由当前指令明确要求。",
+  "settings.agent.memory.enabled": "已开启",
+  "settings.agent.memory.disabled": "已关闭",
   "settings.language.title": "界面语言",
   "settings.language.subtitle":
     "选择 app 界面使用的语言。默认 English; 选择会保存到本地。",

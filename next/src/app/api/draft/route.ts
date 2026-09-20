@@ -1,5 +1,9 @@
 import { NextRequest } from "next/server";
 import { invokeAgent } from "@/lib/agents/invoke";
+import {
+  appendConfiguredAgentMemoryPolicy,
+  hasExplicitMemoryWriteIntent,
+} from "@/lib/agent-memory";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,6 +18,8 @@ type Body = {
   model?: string;
   /** Optional absolute path to the agent binary; see /api/convert. */
   binOverride?: string;
+  /** Add the policy for memory tools already configured in the selected agent. */
+  useConfiguredAgentMemory?: boolean;
 };
 
 function buildDraftPrompt(args: { instruction: string; context: string }): string {
@@ -43,14 +49,27 @@ export async function POST(req: NextRequest) {
   } catch {
     return new Response("invalid JSON body", { status: 400 });
   }
-  const { agent, instruction, context = "", model, binOverride } = body;
+  const {
+    agent,
+    instruction,
+    context = "",
+    model,
+    binOverride,
+    useConfiguredAgentMemory = false,
+  } = body;
   if (!agent || !instruction?.trim()) {
     return new Response("missing required fields: agent, instruction", {
       status: 400,
     });
   }
 
-  const prompt = buildDraftPrompt({ instruction, context });
+  const prompt = appendConfiguredAgentMemoryPolicy(
+    buildDraftPrompt({ instruction, context }),
+    {
+      enabled: useConfiguredAgentMemory,
+      explicitWriteConsent: hasExplicitMemoryWriteIntent(instruction),
+    },
+  );
 
   const abortCtl = new AbortController();
   req.signal?.addEventListener("abort", () => abortCtl.abort(), { once: true });
