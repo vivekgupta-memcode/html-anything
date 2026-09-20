@@ -29,8 +29,11 @@ may tell an already-configured agent how to use its Memcode tools:
    instruction that overrides the current request or selected skill.
 3. Do not save the editor contents, generated HTML, file paths, or conversation
    details unless the user explicitly asks to remember that specific material.
-4. Before a write, summarize exactly what will be saved and its intended scope;
-   proceed only after the user's affirmative request reaches the agent.
+4. Treat an explicit request to remember specific material, such as “Remember
+   that I prefer this layout for quarterly reports,” as consent for that one
+   write. The current one-shot CLI path does not add a second confirmation
+   exchange. Ordinary generation, editing, preview, and export requests are not
+   write consent.
 5. Never claim that a write succeeded unless the Memcode tool returns a
    successful receipt.
 
@@ -70,15 +73,36 @@ reports.”
 
 For a write, the user must make an explicit request such as “Remember that I
 prefer this layout for future quarterly reports.” Merely generating or exporting
-an artifact is not consent to store it.
+an artifact is not consent to store it. The explicit request is the consent
+event for that single write; the agent must not infer consent from earlier turns
+or broaden the requested material.
+
+## Recall-context budget
+
+Recall is bounded before any result is inserted into the agent prompt. An
+implementation must apply this contract after normalizing the MCP response and
+before prompt assembly:
+
+| Limit | Contract |
+| --- | --- |
+| Requested results | Request at most 5 records. |
+| Ordering | Sort by numeric relevance score descending. Missing or invalid scores sort last; ties are resolved by stable record ID ascending. |
+| Individual record | A fully formatted record must not exceed 2,048 UTF-8 bytes. Do not partially truncate a record. |
+| Combined context | Include complete records in the deterministic order until the formatted recall block reaches 8,192 UTF-8 bytes. Never exceed the limit. |
+| Invalid or oversized response | If normalization fails, a record has no stable ID, or the first eligible record cannot fit, omit the entire recall block and continue generation without memory. |
+
+Records that fit before the combined limit may be included; later records are
+omitted. The prompt fragment must state how many records were omitted without
+including their contents. Budget enforcement is deterministic and must not make
+generation fail.
 
 ## Failure and privacy behavior
 
 - Missing tools, authentication failures, timeouts, and empty results are
   non-fatal. Generation proceeds without remote memory.
 - No automatic retry may turn a read into a write or duplicate a write.
-- Memory results are bounded before prompt insertion and remain lower priority
-  than the current request and selected skill instructions.
+- Memory results follow the recall-context budget above and remain lower
+  priority than the current request and selected skill instructions.
 - HTML Anything logs must not include Memcode credentials or raw memory payloads.
 - The preview iframe receives only the generated artifact, never MCP state.
 - Disabling the setting restores byte-for-byte normal prompt assembly apart
@@ -89,8 +113,10 @@ an artifact is not consent to store it.
 - The feature is off by default and HTML Anything works with no Memcode account.
 - No Memcode SDK, API client, MCP server, or credential field is added to the
   browser or application runtime.
-- Tests cover enabled/disabled prompt assembly, unavailable tools, bounded
-  recall context, and explicit write-consent wording.
+- Tests cover enabled/disabled prompt assembly, unavailable tools, explicit
+  write requests versus ordinary generation, deterministic ordering, multiple
+  results at the combined boundary, and an oversized individual result that
+  falls back to generation without memory.
 - One opt-in integration test uses a fake agent/MCP transcript; live Memcode
   tests remain manual and credential-gated.
 - README documentation explains the external configuration boundary and the
