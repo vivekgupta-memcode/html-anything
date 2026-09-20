@@ -180,7 +180,7 @@ type Persisted = {
   historyPaneOpen: boolean;
   locale: Locale;
   layoutMode: LayoutMode;
-  /** Add an opt-in Memcode policy to prompts sent to the selected local agent. */
+  /** Add opt-in read-only Memcode guidance to prompts sent to the selected local agent. */
   useConfiguredAgentMemory: boolean;
 };
 
