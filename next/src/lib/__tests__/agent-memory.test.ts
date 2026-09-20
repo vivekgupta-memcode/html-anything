@@ -32,11 +32,29 @@ describe('configured agent memory policy', () => {
     ).toBe(prompt);
   });
 
-  it('grants one write only for a direct remember instruction', () => {
-    expect(hasExplicitMemoryWriteIntent('Remember that I prefer navy reports.')).toBe(true);
-    expect(hasExplicitMemoryWriteIntent('请记住我偏好海军蓝色的季度报告。')).toBe(true);
-    expect(hasExplicitMemoryWriteIntent('Create a poster that says “remember this moment”.')).toBe(false);
-    expect(hasExplicitMemoryWriteIntent("Don't remember this preference.")).toBe(false);
+  it('grants one write only for an unambiguous memory-write instruction', () => {
+    const explicitMemoryWrites = [
+      'Remember that I prefer navy reports.',
+      'Please save to memory that I prefer compact tables.',
+      'Store in memory: use navy for quarterly reports.',
+      '请记住我偏好海军蓝色的季度报告。',
+    ];
+    for (const instruction of explicitMemoryWrites) {
+      expect(hasExplicitMemoryWriteIntent(instruction)).toBe(true);
+    }
+
+    const ordinaryOrNegatedRequests = [
+      'Create a poster that says “remember this moment”.',
+      "Don't remember this preference.",
+      'Save this markdown article about memory safety.',
+      'Store this preference table in markdown.',
+      'Save this design for later.',
+      'Store this preference as JSON for future edits.',
+      'Please save to memory.',
+    ];
+    for (const instruction of ordinaryOrNegatedRequests) {
+      expect(hasExplicitMemoryWriteIntent(instruction)).toBe(false);
+    }
 
     const ordinary = appendConfiguredAgentMemoryPolicy('prompt', {
       enabled: true,
