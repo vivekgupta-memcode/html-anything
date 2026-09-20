@@ -133,10 +133,10 @@ export function hasExplicitMemoryWriteIntent(instruction: string): boolean {
     /^(?:(?:please|can you|could you|would you)\s+)?(?:remember|memorize)\s+(?:that\s+|this\s+|my\s+|the\s+)?\S/.test(
       normalized,
     ) ||
-    /^(?:(?:please|can you|could you|would you)\s+)?(?:save|store)\s+\S.{0,120}\b(?:memory|preference|for\s+(?:later|future))\b/.test(
+    /^(?:(?:please|can you|could you|would you)\s+)?(?:save|store)\s+(?:to|in)\s+(?:(?:my|the)\s+)?memory(?:\s*[:,-]\s*|\s+)\S/.test(
       normalized,
     ) ||
-    /^(?:请)?(?:记住|记下来|保存到记忆|存入记忆|以后记得)\S*/.test(normalized)
+    /^(?:请)?(?:记住|保存到记忆|存入记忆|以后记得)\S*/.test(normalized)
   );
 }
 
