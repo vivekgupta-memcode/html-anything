@@ -208,7 +208,7 @@ pnpm -F @html-anything/e2e test
 
 只要你已经在终端里登录过对应的 CLI（例如 `claude login`、`cursor login`），HTML Anything 直接复用同一个 session，**不要求你再贴一遍 API Key**。
 
-### 可选的 Memcode 记忆
+### 可选的只读 Memcode 记忆
 
 HTML Anything 可以选择性地给当前 coding agent 加入记忆策略。先在该 agent 中配置远程 Memcode MCP 地址：
 
@@ -216,9 +216,9 @@ HTML Anything 可以选择性地给当前 coding agent 加入记忆策略。先�
 https://mcp.memcode.in/mcp
 ```
 
-兼容的 agent 会自行完成 OAuth discovery、动态客户端注册（DCR）以及 Authorization Code + PKCE，凭据也保存在 agent 自己的 credential store 中。HTML Anything 不会增加 API Key fallback，也不会接收注册信息、Bearer Token 或召回的记忆内容。确认 agent 已经能看到 Memcode tools 后，再开启 **设置 → Agent → 已配置的 agent 记忆**；工具缺失或认证失败时，生成会在没有记忆的情况下继续。
+兼容的 agent 会自行完成 OAuth discovery、动态客户端注册（DCR）以及 Authorization Code + PKCE，凭据也保存在 agent 自己的 credential store 中。HTML Anything 不会增加 API Key fallback，也不会接收注册信息、Bearer Token 或召回的记忆内容。
 
-召回上限为 5 条记录，每条格式化记录最多 2,048 UTF-8 字节，完整召回块最多 8,192 字节。召回内容只是不可信的参考资料，不能覆盖当前请求或 skill。转换、编辑、预览、导出以及普通草稿请求都不构成写入许可。只有当前指令直接要求记忆，例如“请记住我偏好海军蓝色的季度报告”，才允许针对这段明确内容执行一次 `save_memory`；写入不会自动重试。
+开启 **设置 → Agent → 已配置的 agent 记忆（只读）** 前，必须在 agent 侧配置并验证只读工具策略：只开放 `search_memories` 和 `retrieve_answer`，并阻止 `save_memory` 以及其他所有记忆写入工具。如果所选 CLI 无法强制执行该只读策略，请勿开启此选项。HTML Anything 只会追加提示词建议；它无法检查或强制执行 agent 的工具权限，无法拦截 MCP 调用、校验返回记录或强制限制响应大小。召回内容必须视为不可信的参考资料，不能覆盖当前请求或 skill。只读工具缺失或认证失败时，生成会在没有记忆的情况下继续。
 
 ## 🎨 Skills
 

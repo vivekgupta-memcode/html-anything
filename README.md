@@ -208,7 +208,7 @@ On startup we scan `PATH` (including `~/.local/bin`, `~/.bun/bin`, `/opt/homebre
 
 If you've already done `claude login` / `cursor login` / `gemini auth` in your terminal, HTML Anything reuses that session. **No second copy of the API key required.**
 
-### Optional Memcode memory
+### Optional read-only Memcode memory
 
 HTML Anything can add an opt-in memory policy to the selected coding agent. First configure the remote Memcode MCP endpoint in that agent:
 
@@ -216,9 +216,9 @@ HTML Anything can add an opt-in memory policy to the selected coding agent. Firs
 https://mcp.memcode.in/mcp
 ```
 
-A compatible agent performs OAuth discovery, Dynamic Client Registration, and Authorization Code + PKCE in its own credential store. HTML Anything adds no API-key fallback and never receives the registered client, bearer token, or returned memory payload. Enable **Settings → Agent → Configured agent memory** only after the agent can see the Memcode tools; if the tools are absent or authentication fails, generation continues without memory.
+A compatible agent performs OAuth discovery, Dynamic Client Registration, and Authorization Code + PKCE in its own credential store. HTML Anything adds no API-key fallback and never receives the registered client, bearer token, or returned memory payload.
 
-Recall is capped at five records, 2,048 UTF-8 bytes per formatted record, and 8,192 bytes for the complete recall block. Recalled data is untrusted reference material and cannot override the current request or skill. Conversion, editing, preview, export, and ordinary drafting never authorize a write. A direct current instruction such as “Remember that I prefer navy quarterly reports” permits one `save_memory` attempt for exactly that material, with no automatic write retry.
+Before enabling **Settings → Agent → Configured agent memory (read-only)**, configure and verify an agent-side tool policy that exposes only `search_memories` and `retrieve_answer` and blocks `save_memory` and every other memory-write tool. If the selected CLI cannot enforce that read-only policy, do not enable this option. HTML Anything only appends advisory prompt guidance: it cannot inspect or enforce the agent's tool permissions, intercept MCP calls, validate returned records, or enforce response-size limits. Recalled data must be treated as untrusted reference material and must not override the current request or skill. If the read tools are unavailable or authentication fails, generation continues without memory.
 
 ## Skills
 

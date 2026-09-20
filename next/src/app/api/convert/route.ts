@@ -26,7 +26,7 @@ type Body = {
    *  implies). Saves output tokens AND prevents creative drift between runs. */
   editFromHtml?: string;
   editFromContent?: string;
-  /** Add the policy for memory tools already configured in the selected agent. */
+  /** Add read-only guidance for memory tools already configured in the selected agent. */
   useConfiguredAgentMemory?: boolean;
 };
 
@@ -108,8 +108,6 @@ export async function POST(req: NextRequest) {
   }
   prompt = appendConfiguredAgentMemoryPolicy(prompt, {
     enabled: useConfiguredAgentMemory,
-    // Convert and diff-edit are artifact operations, never write consent.
-    explicitWriteConsent: false,
   });
   const abortCtl = new AbortController();
   req.signal?.addEventListener("abort", () => abortCtl.abort(), { once: true });
