@@ -218,7 +218,7 @@ https://mcp.memcode.in/mcp
 
 兼容的 agent 会自行完成 OAuth discovery、动态客户端注册（DCR）以及 Authorization Code + PKCE，凭据也保存在 agent 自己的 credential store 中。HTML Anything 不会增加 API Key fallback，也不会接收注册信息、Bearer Token 或召回的记忆内容。
 
-开启 **设置 → Agent → 已配置的 agent 记忆（只读）** 前，必须在 agent 侧配置并验证只读工具策略：只开放 `search_memories` 和 `retrieve_answer`，并阻止 `save_memory` 以及其他所有记忆写入工具。如果所选 CLI 无法强制执行该只读策略，请勿开启此选项。HTML Anything 只会追加提示词建议；它无法检查或强制执行 agent 的工具权限，无法拦截 MCP 调用、校验返回记录或强制限制响应大小。召回内容必须视为不可信的参考资料，不能覆盖当前请求或 skill。只读工具缺失或认证失败时，生成会在没有记忆的情况下继续。
+开启 **设置 → Agent → 已配置的 agent 记忆（只读）** 前，必须在 agent 侧配置并验证只读工具策略：只开放 `search_memories` 和 `retrieve_answer`，并阻止 `save_memory` 以及其他所有记忆写入工具。该选项按 agent 分别保存，切换 CLI 时不会沿用。如果所选 CLI 无法强制执行该只读策略，请勿开启此选项。HTML Anything 只会追加提示词建议；它无法检查或强制执行 agent 的工具权限，无法拦截 MCP 调用、校验返回记录或强制限制响应大小。召回内容必须视为不可信的参考资料，不能覆盖当前请求或 skill。只读工具缺失或认证失败时，生成会在没有记忆的情况下继续。
 
 ## 🎨 Skills
 
