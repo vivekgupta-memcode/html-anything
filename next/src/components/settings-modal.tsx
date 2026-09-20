@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   LOCALES,
   LOCALE_LABEL,
+  isConfiguredAgentMemoryEnabled,
   useStore,
   type AgentInfo,
   type Locale,
@@ -159,8 +160,8 @@ function AgentSection() {
   const selected = useStore((s) => s.selectedAgent);
   const agentModels = useStore((s) => s.agentModels);
   const agentBinOverrides = useStore((s) => s.agentBinOverrides);
-  const useConfiguredAgentMemory = useStore(
-    (s) => s.useConfiguredAgentMemory,
+  const configuredAgentMemoryByAgent = useStore(
+    (s) => s.configuredAgentMemoryByAgent,
   );
   const setUseConfiguredAgentMemory = useStore(
     (s) => s.setUseConfiguredAgentMemory,
@@ -198,6 +199,10 @@ function AgentSection() {
   const missing = useMemo(() => agents.filter((a) => !a.available), [agents]);
   const selectedAgent = installed.find((a) => a.id === selected);
   const selectedModelId = selected ? agentModels[selected] ?? "default" : "default";
+  const useConfiguredAgentMemory = isConfiguredAgentMemoryEnabled(
+    configuredAgentMemoryByAgent,
+    selectedAgent?.id,
+  );
 
   return (
     <div>
@@ -278,11 +283,17 @@ function AgentSection() {
         <button
           type="button"
           role="switch"
+          disabled={!selectedAgent}
           aria-checked={useConfiguredAgentMemory}
-          onClick={() =>
-            setUseConfiguredAgentMemory(!useConfiguredAgentMemory)
-          }
-          className="shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium transition-colors"
+          onClick={() => {
+            if (selectedAgent) {
+              setUseConfiguredAgentMemory(
+                selectedAgent.id,
+                !useConfiguredAgentMemory,
+              );
+            }
+          }}
+          className="shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           style={{
             background: useConfiguredAgentMemory
               ? "var(--ink)"

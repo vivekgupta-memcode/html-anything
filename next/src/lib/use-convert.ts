@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { useStore } from "./store";
+import { isConfiguredAgentMemoryEnabled, useStore } from "./store";
 import { summarizeForAgent } from "./parsers/auto";
 
 type ConvertReq = {
@@ -87,7 +87,10 @@ export function useConvert() {
         ...(useModel ? { model: useModel } : {}),
         ...(binOverride ? { binOverride } : {}),
         ...(editPayload ?? {}),
-        ...(store.useConfiguredAgentMemory
+        ...(isConfiguredAgentMemoryEnabled(
+          store.configuredAgentMemoryByAgent,
+          req.agent,
+        )
           ? { useConfiguredAgentMemory: true }
           : {}),
       };

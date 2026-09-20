@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { useStore } from "./store";
+import { isConfiguredAgentMemoryEnabled, useStore } from "./store";
 
 type DraftReq = {
   instruction: string;
@@ -71,7 +71,10 @@ export function useDraft() {
           context: req.context ?? before,
           ...(model ? { model } : {}),
           ...(binOverride ? { binOverride } : {}),
-          ...(store.useConfiguredAgentMemory
+          ...(isConfiguredAgentMemoryEnabled(
+            store.configuredAgentMemoryByAgent,
+            agent,
+          )
             ? { useConfiguredAgentMemory: true }
             : {}),
         }),

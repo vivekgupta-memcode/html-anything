@@ -464,7 +464,7 @@ const en: Dict = {
     "HTML Anything reuses your already-logged-in CLI session — no API key required.",
   "settings.agent.memory.title": "Configured agent memory (read-only)",
   "settings.agent.memory.subtitle":
-    "Enable only after the selected agent exposes read-only Memcode tools and blocks all memory writes. HTML Anything cannot enforce tool permissions or response limits.",
+    "Applies only to the selected agent. Enable after it exposes read-only Memcode tools and blocks all memory writes. HTML Anything cannot enforce tool permissions or response limits.",
   "settings.agent.memory.enabled": "On",
   "settings.agent.memory.disabled": "Off",
   "settings.language.title": "Interface language",
@@ -830,7 +830,7 @@ const zhCN: Dict = {
     "HTML Anything 复用你已经登录的 CLI session — 不需要再贴 API Key。",
   "settings.agent.memory.title": "已配置的 agent 记忆（只读）",
   "settings.agent.memory.subtitle":
-    "仅当所选 agent 已开放只读 Memcode 工具并阻止所有记忆写入时开启。HTML Anything 无法强制执行工具权限或响应大小限制。",
+    "仅适用于当前所选 agent。确认它已开放只读 Memcode 工具并阻止所有记忆写入后再开启。HTML Anything 无法强制执行工具权限或响应大小限制。",
   "settings.agent.memory.enabled": "已开启",
   "settings.agent.memory.disabled": "已关闭",
   "settings.language.title": "界面语言",
