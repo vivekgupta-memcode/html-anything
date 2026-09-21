@@ -213,7 +213,7 @@ pnpm -F @html-anything/e2e test
 HTML Anything 可以选择性地给当前 coding agent 加入记忆策略。先在该 agent 中配置远程 Memcode MCP 地址：
 
 ```text
-https://mcp.memcode.in/mcp
+https://mcp.memcode.in/i/html-anything/mcp
 ```
 
 兼容的 agent 会自行完成 OAuth discovery、动态客户端注册（DCR）以及 Authorization Code + PKCE，凭据也保存在 agent 自己的 credential store 中。HTML Anything 不会增加 API Key fallback，也不会接收注册信息、Bearer Token 或召回的记忆内容。
