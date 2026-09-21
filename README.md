@@ -213,7 +213,7 @@ If you've already done `claude login` / `cursor login` / `gemini auth` in your t
 HTML Anything can add an opt-in memory policy to the selected coding agent. First configure the remote Memcode MCP endpoint in that agent:
 
 ```text
-https://mcp.memcode.in/mcp
+https://mcp.memcode.in/i/html-anything/mcp
 ```
 
 A compatible agent performs OAuth discovery, Dynamic Client Registration, and Authorization Code + PKCE in its own credential store. HTML Anything adds no API-key fallback and never receives the registered client, bearer token, or returned memory payload.
